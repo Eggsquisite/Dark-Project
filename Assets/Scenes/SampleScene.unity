@@ -395,8 +395,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.052335896, y: 0, z: 0, w: 0.9986295}
-  m_LocalPosition: {x: -0.13, y: 4.9726095, z: -25.946634}
+  m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: -0.13, y: 4.8822846, z: -25.17518}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1047,7 +1047,7 @@ Transform:
   m_GameObject: {fileID: 1140390302}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.5, z: -6}
+  m_LocalPosition: {x: 0, y: 4.5, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1492,6 +1492,7 @@ GameObject:
   - component: {fileID: 1432035775}
   - component: {fileID: 1432035777}
   - component: {fileID: 1432035778}
+  - component: {fileID: 1432035780}
   m_Layer: 0
   m_Name: Swordmaster
   m_TagString: Untagged
@@ -1508,7 +1509,7 @@ Transform:
   m_GameObject: {fileID: 1432035772}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.13, y: 1, z: -11.92}
+  m_LocalPosition: {x: -0.13, y: 1, z: -16.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1688,9 +1689,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  moveSpeed: 6
   horizontalMultiplier: 1
   verticalMultiplier: 2
+  moveSpeed: 6
   jumpingPower: 6
 --- !u!136 &1432035779
 CapsuleCollider:
@@ -1714,7 +1715,21 @@ CapsuleCollider:
   m_Radius: 0.4
   m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0.03, y: -0.25, z: -0.1}
+  m_Center: {x: 0.030000001, y: -0.22, z: -0.099999994}
+--- !u!114 &1432035780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432035772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b02b45deee78d4643af39f6a6cbcc86d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  sp: {fileID: 0}
 --- !u!1 &1573466211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2255,14 +2270,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894831015}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.052335896, y: 0, z: 0, w: 0.9986295}
-  m_LocalPosition: {x: -0.13, y: 2.567925, z: -26.837828}
+  m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: -0.13, y: 4.8822846, z: -31.408888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1649535859}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 6, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
 --- !u!114 &1894831018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2567,8 +2582,8 @@ Transform:
   m_GameObject: {fileID: 2089112896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: -0.9, z: -0.131}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalPosition: {x: 0, y: -0.9, z: -0.131}
+  m_LocalScale: {x: 1.3, y: 1, z: 1.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1432035773}

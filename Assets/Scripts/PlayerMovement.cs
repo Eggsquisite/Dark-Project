@@ -28,6 +28,7 @@ public class PlayerMovement : PlayerSystem
     void Update()
     {
         ApplyMovement();
+        FlipDirection();
         Debug.Log(IsGrounded());
     }
 
@@ -40,6 +41,11 @@ public class PlayerMovement : PlayerSystem
                 rb.velocity.y, 
                 moveDirection.y * moveSpeed * verticalMultiplier);
         }
+    }
+
+    void FlipDirection()
+    {
+        return;
     }
 
     private bool IsGrounded()
