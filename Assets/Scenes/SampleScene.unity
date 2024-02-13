@@ -1657,7 +1657,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &1432035777
@@ -1728,8 +1728,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02b45deee78d4643af39f6a6cbcc86d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
-  sp: {fileID: 0}
+  anim: {fileID: 1910564533}
+  sp: {fileID: 1910564532}
 --- !u!1 &1573466211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2216,6 +2216,7 @@ GameObject:
   - component: {fileID: 1894831017}
   - component: {fileID: 1894831016}
   - component: {fileID: 1894831018}
+  - component: {fileID: 1894831019}
   m_Layer: 0
   m_Name: CCam
   m_TagString: Untagged
@@ -2295,6 +2296,18 @@ MonoBehaviour:
   m_BoundingShape2D: {fileID: 0}
   m_ConfineScreenEdges: 1
   m_Damping: 0
+--- !u!114 &1894831019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894831015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a05de0ac134f4f9d01bef6b9da077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1910564530
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,7 +2361,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 523748cc82d92a546b04ef12a819b7cf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

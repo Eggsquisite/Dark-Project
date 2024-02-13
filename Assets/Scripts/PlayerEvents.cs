@@ -7,7 +7,7 @@ public struct PlayerEvents
 {
     // Input Events
 
-    public Action OnMoveInput;
+    public Action<Vector2> OnMoveInput;
 
     public Action OnJumpInput;
     public Action OnDodgeInput;
@@ -22,7 +22,8 @@ public struct PlayerEvents
 
     // Movement Events
 
-    public Action OnMoveUsed;
+    public Action OnMovement;
+    public Action OnStationary;
 
     public Action OnJumpUsed;
     public Action OnDodgeUsed;

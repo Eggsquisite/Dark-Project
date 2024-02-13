@@ -15,6 +15,7 @@ public class PlayerMovement : PlayerSystem
     [SerializeField] float jumpingPower;
 
     private bool canMove = true;
+    private bool isMoving = false;
     private bool isFacingRight = true;
     private Vector3 moveDirection = Vector3.zero;
 
@@ -25,27 +26,47 @@ public class PlayerMovement : PlayerSystem
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         ApplyMovement();
-        FlipDirection();
-        Debug.Log(IsGrounded());
+        WeightedGravity();
     }
 
     void ApplyMovement()
     {
         if (canMove)
         {
+            // Move and call the walk animation event
             rb.velocity = new Vector3(
                 moveDirection.x * moveSpeed * horizontalMultiplier, 
                 rb.velocity.y, 
                 moveDirection.y * moveSpeed * verticalMultiplier);
+
+            if (rb.velocity.x != 0 || rb.velocity.z != 0)
+            {
+                if (!isMoving)
+                {
+                    isMoving = true;
+                    player.ID.events.OnMovement?.Invoke();
+                }
+            }
+            else if (rb.velocity.x == 0 || rb.velocity.z == 0)
+            {
+                if (isMoving)
+                {
+                    isMoving = false;
+                    player.ID.events.OnStationary?.Invoke();
+                }
+            }
         }
     }
 
-    void FlipDirection()
+    private void WeightedGravity()
     {
-        return;
+        if (!IsGrounded() && rb.velocity.y < 0f)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.05f, rb.velocity.z);
+        }
     }
 
     private bool IsGrounded()
@@ -56,11 +77,14 @@ public class PlayerMovement : PlayerSystem
 
     public void Move(InputAction.CallbackContext context)
     {
+        // TODO break this up into a playerinput script
         moveDirection = context.ReadValue<Vector2>();
+        player.ID.events.OnMoveInput?.Invoke(moveDirection);
     }
 
     public void Jump(InputAction.CallbackContext context)
     {
+        // TODO break this up into a playerinput script
         if (context.performed && IsGrounded())
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
