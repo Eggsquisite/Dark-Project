@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : PlayerSystem
 {
     private Rigidbody rb;
-    public Transform groundCheck;
-    public LayerMask groundLayer;
 
     [SerializeField] float horizontalMultiplier;
     [SerializeField] float verticalMultiplier;
@@ -47,7 +45,7 @@ public class PlayerMovement : PlayerSystem
                 if (!isMoving)
                 {
                     isMoving = true;
-                    player.ID.events.OnMovement?.Invoke();
+                    //player.ID.events.OnMovement?.Invoke(moveDirection);
                 }
             }
             else if (rb.velocity.x == 0 || rb.velocity.z == 0)
@@ -55,7 +53,7 @@ public class PlayerMovement : PlayerSystem
                 if (isMoving)
                 {
                     isMoving = false;
-                    player.ID.events.OnStationary?.Invoke();
+                    //player.ID.events.OnStationary?.Invoke();
                 }
             }
         }
@@ -63,9 +61,10 @@ public class PlayerMovement : PlayerSystem
 
     private void CheckFall()
     {
-        if (!IsGrounded() && rb.velocity.y < 0f)
+        if (!player.IsGrounded() && rb.velocity.y < 0f)
         {
-            WeightedGravity();
+            // Add weight to character at top of jump to avoid floaty feeling
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.10f, rb.velocity.z);
 
             if (!isFalling)
             {
@@ -83,38 +82,29 @@ public class PlayerMovement : PlayerSystem
         }
     }
 
-    private void WeightedGravity()
+    private void SetMovementVector(Vector2 direction)
     {
-        rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.10f, rb.velocity.z);
+        moveDirection = direction;
     }
 
-    private bool IsGrounded()
+    private void Jump()
     {
-        RaycastHit hit;
-        return Physics.Raycast(groundCheck.position, Vector3.down, out hit, 0.3f, groundLayer);
-    }
-
-    public void Move(InputAction.CallbackContext context)
-    {
-        // TODO break this up into a playerinput script
-        moveDirection = context.ReadValue<Vector2>();
-        player.ID.events.OnMoveInput?.Invoke(moveDirection);
-    }
-
-    public void Jump(InputAction.CallbackContext context)
-    {
-        // TODO break this up into a playerinput script
-        if (context.performed && IsGrounded())
+        if (player.IsGrounded())
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
-            player.ID.events.OnJumpInput?.Invoke();
+            player.ID.events.OnJumpUsed?.Invoke();
         }
+    }
 
-        if (context.canceled && rb.velocity.y > 0f)
-        {
-            return;
-            // If jump button is not held for full duration, player will have a shorter jump
-            //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.5f, rb.velocity.z);
-        }
+    private void OnEnable()
+    {
+        player.ID.events.OnMoveInput += SetMovementVector;
+        player.ID.events.OnJumpInput += Jump;
+    }
+
+    private void OnDisable()
+    {
+        player.ID.events.OnMoveInput -= SetMovementVector;
+        player.ID.events.OnJumpInput -= Jump;
     }
 }

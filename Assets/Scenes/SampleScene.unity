@@ -371,7 +371,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -396,7 +396,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: -0.13, y: 5.3296294, z: -25.17518}
+  m_LocalPosition: {x: -0.13, y: 5.9642134, z: -32.374813}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1016,7 +1016,7 @@ Transform:
   m_GameObject: {fileID: 963140884}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -50, y: 0, z: -35}
+  m_LocalPosition: {x: -50, y: 0, z: -50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1537,6 +1537,7 @@ GameObject:
   - component: {fileID: 1432035779}
   - component: {fileID: 1432035775}
   - component: {fileID: 1432035777}
+  - component: {fileID: 1432035781}
   - component: {fileID: 1432035778}
   - component: {fileID: 1432035780}
   m_Layer: 0
@@ -1592,8 +1593,8 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1432035778}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 1432035781}
+        m_TargetAssemblyTypeName: PlayerInput, Assembly-CSharp
         m_MethodName: Move
         m_Mode: 0
         m_Arguments:
@@ -1616,8 +1617,8 @@ MonoBehaviour:
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1432035778}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+      - m_Target: {fileID: 1432035781}
+        m_TargetAssemblyTypeName: PlayerInput, Assembly-CSharp
         m_MethodName: Jump
         m_Mode: 0
         m_Arguments:
@@ -1720,6 +1721,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: {fileID: 11400000, guid: 215183f93268e7a4e891ca75863c729a, type: 2}
   STATE: 0
+  groundCheck: {fileID: 642285131}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &1432035778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1732,10 +1737,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aa34aef85bfea149baddfbbe9bc0bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheck: {fileID: 642285131}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
   horizontalMultiplier: 1
   verticalMultiplier: 2
   moveSpeed: 6
@@ -1777,6 +1778,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 1910564533}
   sp: {fileID: 1910564532}
+--- !u!114 &1432035781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432035772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d611f1510eff65498ebdc597f6faa54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1573466211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1933,8 +1946,8 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 15
-  m_DeadZoneWidth: 0
+  m_CameraDistance: 16
+  m_DeadZoneWidth: 0.5
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
@@ -2293,7 +2306,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1432035773}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5
+    OrthographicSize: 6
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -2319,7 +2332,7 @@ Transform:
   m_GameObject: {fileID: 1894831015}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: -0.13, y: 4.8822846, z: -31.408888}
+  m_LocalPosition: {x: -0.13, y: 5.1411033, z: -32.374813}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2588,7 +2601,7 @@ Transform:
   m_GameObject: {fileID: 2047426753}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -25}
+  m_LocalPosition: {x: 0, y: 0.5, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2613,8 +2626,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 100.09451, y: 10, z: 9.033731}
-  m_Center: {x: 0.19340515, y: 5, z: 3.0475893}
+  m_Size: {x: 100.09451, y: 10.928427, z: 13.02565}
+  m_Center: {x: 0.19340515, y: 5.4642134, z: 2.012268}
 --- !u!1 &2089112896
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
     public enum PlayerState
     {
         // Player states to manage allowed behaviors
@@ -18,4 +17,13 @@ public class Player : MonoBehaviour
 
     public PlayerID ID;
     public PlayerState STATE;
+
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask groundLayer;
+
+    public bool IsGrounded()
+    {
+        RaycastHit hit;
+        return Physics.Raycast(groundCheck.position, Vector3.down, out hit, 0.3f, groundLayer);
+    }
 }

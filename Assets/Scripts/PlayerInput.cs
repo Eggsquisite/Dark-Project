@@ -1,24 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : PlayerSystem
 {
-    private float horizontalMove, verticalMove;
+    private Vector2 moveDirection;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Move(InputAction.CallbackContext context)
     {
-        
-        Debug.Log(player.ID.playerName);
+        moveDirection = context.ReadValue<Vector2>();
+        player.ID.events.OnMoveInput?.Invoke(moveDirection);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Jump(InputAction.CallbackContext context)
     {
-        
+        if (context.performed)
+        {
+            player.ID.events.OnJumpInput?.Invoke();
+        }
     }
-
-
 }

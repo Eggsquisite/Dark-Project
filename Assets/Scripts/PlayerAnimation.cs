@@ -7,11 +7,25 @@ public class PlayerAnimation : PlayerSystem
     [SerializeField] Animator anim;
     [SerializeField] SpriteRenderer sp;
 
+    private Rigidbody rb;
     private bool isMoving = false;
 
-    void CheckMovement(Vector2 moveSpeed)
+    private void Start()
     {
-        if (moveSpeed.x != 0 || moveSpeed.y != 0)
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        AnimateGroundMovement();
+    }
+
+    void AnimateGroundMovement()
+    {
+        if (!player.IsGrounded() || player.STATE == Player.PlayerState.Stun)
+            return;
+
+        if (rb.velocity.x != 0 || rb.velocity.z != 0)
         {
             if (!isMoving)
             {
@@ -19,7 +33,8 @@ public class PlayerAnimation : PlayerSystem
                 AnimateRun();
             }
         }
-        else if (moveSpeed.x == 0 || moveSpeed.y == 0)
+        
+        if (rb.velocity.x == 0 && rb.velocity.z == 0)
         {
             if (isMoving)
             {
@@ -37,41 +52,50 @@ public class PlayerAnimation : PlayerSystem
 
     void AnimateIdle()
     {
-        anim.Play("Idle");
+        anim.Play(PlayerAnimStates.IDLE);
     }
 
     void AnimateRun()
     {
-        anim.Play("Run");
+        anim.Play(PlayerAnimStates.RUN);
     }
 
     void AnimateJump()
     {
-        anim.Play("Jump");
+        anim.Play(PlayerAnimStates.JUMP);
     }
 
     void AnimateFall()
     {
-        anim.Play("Fall");
+        anim.Play(PlayerAnimStates.FALL);
+    }
+
+    void AnimateLand()
+    {
+        anim.Play(PlayerAnimStates.LAND);
     }
 
     private void OnEnable()
     {
-        player.ID.events.OnMoveInput += CheckMovement;
         player.ID.events.OnMoveInput += CheckDirection;
 
-        player.ID.events.OnFalling += AnimateFall;
         //player.ID.events.OnStationary += AnimateIdle;
         //player.ID.events.OnMovement += AnimateRun;
+
+        player.ID.events.OnJumpUsed += AnimateJump;
+        player.ID.events.OnFalling += AnimateFall;
+        player.ID.events.OnLanding += AnimateLand;
     }
 
     private void OnDisable()
     {
-        player.ID.events.OnMoveInput -= CheckMovement;
         player.ID.events.OnMoveInput -= CheckDirection;
 
-        player.ID.events.OnFalling -= AnimateFall;
         //player.ID.events.OnStationary -= AnimateIdle;
         //player.ID.events.OnMovement -= AnimateRun;
+
+        player.ID.events.OnJumpUsed -= AnimateJump;
+        player.ID.events.OnFalling -= AnimateFall;
+        player.ID.events.OnLanding -= AnimateLand;
     }
 }
