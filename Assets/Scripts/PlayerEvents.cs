@@ -24,6 +24,8 @@ public struct PlayerEvents
 
     public Action OnMovement;
     public Action OnStationary;
+    public Action OnFalling;
+    public Action OnLanding;
 
     public Action OnJumpUsed;
     public Action OnDodgeUsed;

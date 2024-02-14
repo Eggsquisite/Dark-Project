@@ -16,7 +16,7 @@ public class PlayerMovement : PlayerSystem
 
     private bool canMove = true;
     private bool isMoving = false;
-    private bool isFacingRight = true;
+    private bool isFalling = false;
     private Vector3 moveDirection = Vector3.zero;
 
     // Start is called before the first frame update
@@ -29,7 +29,7 @@ public class PlayerMovement : PlayerSystem
     void FixedUpdate()
     {
         ApplyMovement();
-        WeightedGravity();
+        CheckFall();
     }
 
     void ApplyMovement()
@@ -61,12 +61,31 @@ public class PlayerMovement : PlayerSystem
         }
     }
 
-    private void WeightedGravity()
+    private void CheckFall()
     {
         if (!IsGrounded() && rb.velocity.y < 0f)
         {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.05f, rb.velocity.z);
+            WeightedGravity();
+
+            if (!isFalling)
+            {
+                isFalling = true;
+                player.ID.events.OnFalling?.Invoke();
+            }
         }
+        else if (rb.velocity.y == 0f)
+        {
+            if (isFalling)
+            {
+                isFalling = false;
+                player.ID.events.OnLanding?.Invoke();
+            }
+        }
+    }
+
+    private void WeightedGravity()
+    {
+        rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 1.10f, rb.velocity.z);
     }
 
     private bool IsGrounded()
@@ -88,6 +107,7 @@ public class PlayerMovement : PlayerSystem
         if (context.performed && IsGrounded())
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
+            player.ID.events.OnJumpInput?.Invoke();
         }
 
         if (context.canceled && rb.velocity.y > 0f)

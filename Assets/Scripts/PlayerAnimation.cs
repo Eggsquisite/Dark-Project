@@ -7,15 +7,7 @@ public class PlayerAnimation : PlayerSystem
     [SerializeField] Animator anim;
     [SerializeField] SpriteRenderer sp;
 
-    private Rigidbody rb;
     private bool isMoving = false;
-    private bool isFacingRight = true;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
 
     void CheckMovement(Vector2 moveSpeed)
     {
@@ -53,10 +45,22 @@ public class PlayerAnimation : PlayerSystem
         anim.Play("Run");
     }
 
+    void AnimateJump()
+    {
+        anim.Play("Jump");
+    }
+
+    void AnimateFall()
+    {
+        anim.Play("Fall");
+    }
+
     private void OnEnable()
     {
         player.ID.events.OnMoveInput += CheckMovement;
         player.ID.events.OnMoveInput += CheckDirection;
+
+        player.ID.events.OnFalling += AnimateFall;
         //player.ID.events.OnStationary += AnimateIdle;
         //player.ID.events.OnMovement += AnimateRun;
     }
@@ -65,6 +69,8 @@ public class PlayerAnimation : PlayerSystem
     {
         player.ID.events.OnMoveInput -= CheckMovement;
         player.ID.events.OnMoveInput -= CheckDirection;
+
+        player.ID.events.OnFalling -= AnimateFall;
         //player.ID.events.OnStationary -= AnimateIdle;
         //player.ID.events.OnMovement -= AnimateRun;
     }

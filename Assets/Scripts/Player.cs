@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public PlayerID ID;
 
+    public enum PlayerState
+    {
+        // Player states to manage allowed behaviors
+        Idle,
+        Run,
+        Dodge,
+        Hit,
+        Death,
+        Stun
+    }
+
+    public PlayerID ID;
+    public PlayerState STATE;
 }
