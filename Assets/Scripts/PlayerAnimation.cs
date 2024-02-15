@@ -6,26 +6,30 @@ public class PlayerAnimation : PlayerSystem
 {
     [SerializeField] Animator anim;
     [SerializeField] SpriteRenderer sp;
+    private RuntimeAnimatorController ac;
 
     private Rigidbody rb;
     private bool isMoving = false;
+    private string currentState;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        ac = anim.runtimeAnimatorController;
     }
 
     private void Update()
     {
-        AnimateGroundMovement();
+        if (player.IsGrounded())
+        {
+            AnimateMovement();
+            AnimateStationary();
+        }
     }
 
-    void AnimateGroundMovement()
+    void AnimateMovement()
     {
-        if (!player.IsGrounded() || player.STATE == Player.PlayerState.Stun)
-            return;
-
-        if (rb.velocity.x != 0 || rb.velocity.z != 0)
+        if (rb.velocity != Vector3.zero)
         {
             if (!isMoving)
             {
@@ -34,14 +38,18 @@ public class PlayerAnimation : PlayerSystem
             }
         }
         
-        if (rb.velocity.x == 0 && rb.velocity.z == 0)
+    }
+
+    void AnimateStationary()
+    {    
+        if (rb.velocity == Vector3.zero)
         {
             if (isMoving)
             {
                 isMoving = false;
                 AnimateIdle();
             }
-        }
+        }   
     }
 
     void CheckDirection(Vector2 moveDirection)
@@ -52,28 +60,45 @@ public class PlayerAnimation : PlayerSystem
 
     void AnimateIdle()
     {
-        anim.Play(PlayerAnimStates.IDLE);
+        PlayAnimation(PlayerAnimStates.IDLE);
     }
 
     void AnimateRun()
     {
-        anim.Play(PlayerAnimStates.RUN);
+        PlayAnimation(PlayerAnimStates.RUN);
     }
 
     void AnimateJump()
     {
-        anim.Play(PlayerAnimStates.JUMP);
+        PlayAnimation(PlayerAnimStates.JUMP);
     }
 
     void AnimateFall()
     {
-        anim.Play(PlayerAnimStates.FALL);
+        PlayAnimation(PlayerAnimStates.FALL);
     }
 
     void AnimateLand()
     {
-        anim.Play(PlayerAnimStates.LAND);
+        PlayAnimation(PlayerAnimStates.LAND);
     }
+
+    // Animation Helper Functions ////////////////////////////////////////
+    private void PlayAnimation(string newAnim)
+    {
+        AnimHelper.ChangeAnimationState(anim, ref currentState, newAnim);
+    }
+
+    public void ReplayAnimation(string newAnim)
+    {
+        AnimHelper.ReplayAnimation(anim, ref currentState, newAnim);
+    }
+
+    private float GetAnimationLength(string newAnim)
+    {
+        return AnimHelper.GetAnimClipLength(ac, newAnim);
+    }
+    // Animation Helper Functions ////////////////////////////////////////
 
     private void OnEnable()
     {

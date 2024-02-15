@@ -23,7 +23,7 @@ public class PlayerMovement : PlayerSystem
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
+    // Update is called once per frame 
     void FixedUpdate()
     {
         ApplyMovement();
