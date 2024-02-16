@@ -1741,6 +1741,8 @@ MonoBehaviour:
   verticalMultiplier: 2
   moveSpeed: 6
   jumpingPower: 6
+  fallSpeed: 5.6
+  mState: 0
 --- !u!136 &1432035779
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -22,7 +22,7 @@ public struct PlayerEvents
 
     // Movement Events
 
-    public Action<Vector2> OnMovement;
+    public Action OnMovement;
     public Action OnStationary;
     public Action OnFalling;
     public Action OnLanding;

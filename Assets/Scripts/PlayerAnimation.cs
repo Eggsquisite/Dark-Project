@@ -8,48 +8,11 @@ public class PlayerAnimation : PlayerSystem
     [SerializeField] SpriteRenderer sp;
     private RuntimeAnimatorController ac;
 
-    private Rigidbody rb;
-    private bool isMoving = false;
     private string currentState;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
         ac = anim.runtimeAnimatorController;
-    }
-
-    private void Update()
-    {
-        if (player.IsGrounded())
-        {
-            AnimateMovement();
-            AnimateStationary();
-        }
-    }
-
-    void AnimateMovement()
-    {
-        if (rb.velocity != Vector3.zero)
-        {
-            if (!isMoving)
-            {
-                isMoving = true;
-                AnimateRun();
-            }
-        }
-        
-    }
-
-    void AnimateStationary()
-    {    
-        if (rb.velocity == Vector3.zero)
-        {
-            if (isMoving)
-            {
-                isMoving = false;
-                AnimateIdle();
-            }
-        }   
     }
 
     void CheckDirection(Vector2 moveDirection)
@@ -104,8 +67,8 @@ public class PlayerAnimation : PlayerSystem
     {
         player.ID.events.OnMoveInput += CheckDirection;
 
-        //player.ID.events.OnStationary += AnimateIdle;
-        //player.ID.events.OnMovement += AnimateRun;
+        player.ID.events.OnMovement += AnimateRun;
+        player.ID.events.OnStationary += AnimateIdle;
 
         player.ID.events.OnJumpUsed += AnimateJump;
         player.ID.events.OnFalling += AnimateFall;
@@ -116,8 +79,8 @@ public class PlayerAnimation : PlayerSystem
     {
         player.ID.events.OnMoveInput -= CheckDirection;
 
-        //player.ID.events.OnStationary -= AnimateIdle;
-        //player.ID.events.OnMovement -= AnimateRun;
+        player.ID.events.OnMovement -= AnimateRun;
+        player.ID.events.OnStationary -= AnimateIdle;
 
         player.ID.events.OnJumpUsed -= AnimateJump;
         player.ID.events.OnFalling -= AnimateFall;
