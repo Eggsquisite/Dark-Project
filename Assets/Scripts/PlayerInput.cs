@@ -21,4 +21,12 @@ public class PlayerInput : PlayerSystem
             player.ID.events.OnJumpInput?.Invoke();
         }
     }
+
+    public void Dodge(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            player.ID.events.OnDodgeInput?.Invoke();
+        }
+    }
 }

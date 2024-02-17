@@ -11,20 +11,35 @@ public class PlayerMovement : PlayerSystem
         run,
         jump,
         fall,
-        land
+        land,
+        dodge
     }
 
     private Rigidbody rb;
+    public MovementState mState;
 
+    [Header("Move")]
     [SerializeField] float horizontalMultiplier;
     [SerializeField] float verticalMultiplier;
     [SerializeField] float moveSpeed;
+
+    private bool canMove = true;
+    private bool facingRight = true;
+    private Vector3 moveDirection = Vector3.zero;
+
+    [Header("Jump")]
     [SerializeField] float jumpingPower;
     [SerializeField][Range(0, 10)] float fallSpeed;
 
-    private bool canMove = true;
-    private Vector3 moveDirection = Vector3.zero;
-    public MovementState mState;
+    [Header("Dodge")]
+    [SerializeField] float dodgeForce;
+    [SerializeField] float dodgeTime;
+    [SerializeField] float dodgeCooldown;
+
+    private bool dodgeReady = true;
+    private float dodgeCooldownTimer;
+
+    private Coroutine dodgeRoutine, dodgeCooldownRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +52,7 @@ public class PlayerMovement : PlayerSystem
     {
         Movement();
         CheckFall();
+        CheckDirection();
     }
 
     void Movement()
@@ -90,15 +106,106 @@ public class PlayerMovement : PlayerSystem
         }
     }
 
+    private void CheckDirection()
+    {
+        if (canMove)
+        {
+            if (moveDirection.x > 0 && !facingRight) { 
+                facingRight = true;
+                player.ID.events.OnFacingRight?.Invoke(facingRight);
+            }
+            else if (moveDirection.x < 0 && facingRight)
+            {
+                facingRight = false;
+                player.ID.events.OnFacingRight?.Invoke(facingRight);
+            }
+        }
+    }
+
     private void Jump()
     {
-        if (player.IsGrounded())
+        if (canMove)
         {
-            SetMovementState(MovementState.jump);
+            if (player.IsGrounded())
+            {
+                SetMovementState(MovementState.jump);
+                player.ID.events.OnJumpUsed?.Invoke();
             
-            rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
-            player.ID.events.OnJumpUsed?.Invoke();
+                rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
+            }
         }
+    }
+
+    private void Dodge()
+    {
+        if (!dodgeReady)
+        {
+            Debug.Log("Dodge is in cooldown! " + dodgeCooldownTimer + " seconds left");
+            return;
+        }
+
+        if (canMove)
+        {            
+            if (player.IsGrounded() && mState != MovementState.jump)
+            {
+                canMove = false;
+
+                // Save player movement direction
+                Vector3 dodgeDirection = moveDirection;
+
+                SetMovementState(MovementState.dodge);
+                player.ID.events.OnDodgeUsed?.Invoke();
+
+                // Begin dodge movement and cooldown
+                if (dodgeRoutine != null)
+                    StopCoroutine(dodgeRoutine);
+
+                dodgeRoutine = StartCoroutine(DodgeRoutine(dodgeDirection));
+
+                if (dodgeCooldownRoutine != null)
+                    StopCoroutine(dodgeCooldownRoutine);
+
+                dodgeCooldownRoutine = StartCoroutine(DodgeCooldown());
+            }
+        }
+    }
+
+    IEnumerator DodgeRoutine(Vector3 dodgeDirection)
+    {
+        if (dodgeDirection == Vector3.zero)
+        {
+            if (facingRight)
+                rb.velocity = new Vector3(1f * dodgeForce, 0f, 0f);
+            else
+                rb.velocity = new Vector3(-1f * dodgeForce, 0f, 0f);
+        }
+        else
+        {
+            rb.velocity = new Vector3(
+                dodgeDirection.x * dodgeForce * horizontalMultiplier, 
+                0f, 
+                dodgeDirection.y * dodgeForce * verticalMultiplier);
+        }
+
+        yield return new WaitForSeconds(dodgeTime);
+
+        // Renable movement
+        canMove = true;
+    }
+
+    IEnumerator DodgeCooldown()
+    {
+        Debug.Log("Dodge cooldown started");
+        dodgeReady = false;
+        dodgeCooldownTimer = dodgeCooldown;
+
+        while (dodgeCooldownTimer > 0)
+        {
+            dodgeCooldownTimer -= 0.1f;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        dodgeReady = true;
     }
 
     private void SetMovementState(MovementState state)
@@ -113,6 +220,8 @@ public class PlayerMovement : PlayerSystem
             mState = MovementState.fall;
         else if (state == MovementState.land && mState != MovementState.land) 
             mState = MovementState.land;
+        else if (state == MovementState.dodge && mState != MovementState.dodge)
+            mState = MovementState.dodge;
     }
 
     private void SetMovementVector(Vector2 direction)
@@ -124,11 +233,13 @@ public class PlayerMovement : PlayerSystem
     {
         player.ID.events.OnMoveInput += SetMovementVector;
         player.ID.events.OnJumpInput += Jump;
+        player.ID.events.OnDodgeInput += Dodge;
     }
 
     private void OnDisable()
     {
         player.ID.events.OnMoveInput -= SetMovementVector;
         player.ID.events.OnJumpInput -= Jump;
+        player.ID.events.OnDodgeInput -= Dodge;
     }
 }

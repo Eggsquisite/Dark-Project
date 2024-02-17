@@ -26,6 +26,7 @@ public struct PlayerEvents
     public Action OnStationary;
     public Action OnFalling;
     public Action OnLanding;
+    public Action<bool> OnFacingRight;
 
     public Action OnJumpUsed;
     public Action OnDodgeUsed;

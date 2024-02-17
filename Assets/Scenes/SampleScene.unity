@@ -1632,7 +1632,19 @@ MonoBehaviour:
     m_ActionId: b0da6fd1-5068-4d11-af94-42c9d150b011
     m_ActionName: Player/Jump[/Keyboard/space]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1432035781}
+        m_TargetAssemblyTypeName: PlayerInput, Assembly-CSharp
+        m_MethodName: Dodge
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 037e54b9-f3e6-408a-989f-3bda16439549
     m_ActionName: Player/Dodge[/Keyboard/leftShift]
   - m_PersistentCalls:
@@ -1737,12 +1749,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aa34aef85bfea149baddfbbe9bc0bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mState: 0
   horizontalMultiplier: 1
   verticalMultiplier: 2
   moveSpeed: 6
   jumpingPower: 6
   fallSpeed: 5.6
-  mState: 0
+  dodgeForce: 8
+  dodgeTime: 0.5
+  dodgeCooldown: 0
 --- !u!136 &1432035779
 CapsuleCollider:
   m_ObjectHideFlags: 0

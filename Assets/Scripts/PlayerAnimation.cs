@@ -15,10 +15,10 @@ public class PlayerAnimation : PlayerSystem
         ac = anim.runtimeAnimatorController;
     }
 
-    void CheckDirection(Vector2 moveDirection)
+    void CheckDirection(bool facingRight)
     {
-        if (moveDirection.x > 0) sp.flipX = false;
-        else if (moveDirection.x < 0) sp.flipX = true;
+        if (facingRight) sp.flipX = false;
+        else if (!facingRight) sp.flipX = true;
     }
 
     void AnimateIdle()
@@ -46,6 +46,11 @@ public class PlayerAnimation : PlayerSystem
         PlayAnimation(PlayerAnimStates.LAND);
     }
 
+    void AnimateDodge()
+    {
+        PlayAnimation(PlayerAnimStates.DODGE);
+    }
+
     // Animation Helper Functions ////////////////////////////////////////
     private void PlayAnimation(string newAnim)
     {
@@ -65,10 +70,11 @@ public class PlayerAnimation : PlayerSystem
 
     private void OnEnable()
     {
-        player.ID.events.OnMoveInput += CheckDirection;
+        player.ID.events.OnFacingRight += CheckDirection;
 
         player.ID.events.OnMovement += AnimateRun;
         player.ID.events.OnStationary += AnimateIdle;
+        player.ID.events.OnDodgeUsed += AnimateDodge;
 
         player.ID.events.OnJumpUsed += AnimateJump;
         player.ID.events.OnFalling += AnimateFall;
@@ -77,10 +83,11 @@ public class PlayerAnimation : PlayerSystem
 
     private void OnDisable()
     {
-        player.ID.events.OnMoveInput -= CheckDirection;
+        player.ID.events.OnFacingRight -= CheckDirection;
 
         player.ID.events.OnMovement -= AnimateRun;
         player.ID.events.OnStationary -= AnimateIdle;
+        player.ID.events.OnDodgeUsed -= AnimateDodge;
 
         player.ID.events.OnJumpUsed -= AnimateJump;
         player.ID.events.OnFalling -= AnimateFall;
