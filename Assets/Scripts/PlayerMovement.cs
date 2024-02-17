@@ -31,6 +31,8 @@ public class PlayerMovement : PlayerSystem
     [SerializeField] float jumpingPower;
     [SerializeField][Range(0, 10)] float fallSpeed;
 
+    private Coroutine landRoutine;
+
     [Header("Dodge")]
     [SerializeField] float dodgeForce;
     [SerializeField] float dodgeTime;
@@ -38,8 +40,8 @@ public class PlayerMovement : PlayerSystem
 
     private bool dodgeReady = true;
     private float dodgeCooldownTimer;
-
     private Coroutine dodgeRoutine, dodgeCooldownRoutine;
+
 
     // Start is called before the first frame update
     void Start()
@@ -51,8 +53,8 @@ public class PlayerMovement : PlayerSystem
     void FixedUpdate()
     {
         Movement();
-        CheckFall();
         CheckDirection();
+        CheckFall();
     }
 
     void Movement()
@@ -61,12 +63,12 @@ public class PlayerMovement : PlayerSystem
         {
             // Movement is applied despite movement state
             rb.velocity = new Vector3(
-                moveDirection.x * moveSpeed * horizontalMultiplier, 
-                rb.velocity.y, 
+                moveDirection.x * moveSpeed * horizontalMultiplier,
+                rb.velocity.y,
                 moveDirection.y * moveSpeed * verticalMultiplier);
 
             // Do not call run/idle events if player is jumping
-            if (mState == MovementState.jump)
+            if (IsJumping())
                 return;
 
             // Invoke run/idle events depending on player velocity
@@ -76,7 +78,7 @@ public class PlayerMovement : PlayerSystem
 
                 if (player.IsGrounded() && mState == MovementState.run)
                     player.ID.events.OnMovement?.Invoke();
-                
+
             }
             else if (rb.velocity == Vector3.zero)
             {
@@ -84,6 +86,23 @@ public class PlayerMovement : PlayerSystem
 
                 if (player.IsGrounded() && mState == MovementState.idle)
                     player.ID.events.OnStationary?.Invoke();
+            }
+        }
+    }
+
+    private void CheckDirection()
+    {
+        if (canMove)
+        {
+            if (moveDirection.x > 0 && !facingRight)
+            {
+                facingRight = true;
+                player.ID.events.OnFacingRight?.Invoke(facingRight);
+            }
+            else if (moveDirection.x < 0 && facingRight)
+            {
+                facingRight = false;
+                player.ID.events.OnFacingRight?.Invoke(facingRight);
             }
         }
     }
@@ -101,25 +120,15 @@ public class PlayerMovement : PlayerSystem
         }
         else if (rb.velocity.y == 0f && mState == MovementState.fall)
         {
+            Debug.Log("Landed");
             SetMovementState(MovementState.land);
             player.ID.events.OnLanding?.Invoke();
         }
     }
 
-    private void CheckDirection()
+    private void OnLandingDone()
     {
-        if (canMove)
-        {
-            if (moveDirection.x > 0 && !facingRight) { 
-                facingRight = true;
-                player.ID.events.OnFacingRight?.Invoke(facingRight);
-            }
-            else if (moveDirection.x < 0 && facingRight)
-            {
-                facingRight = false;
-                player.ID.events.OnFacingRight?.Invoke(facingRight);
-            }
-        }
+        SetMovementState(MovementState.idle);
     }
 
     private void Jump()
@@ -146,7 +155,7 @@ public class PlayerMovement : PlayerSystem
 
         if (canMove)
         {            
-            if (player.IsGrounded() && mState != MovementState.jump)
+            if (player.IsGrounded() && !IsJumping())
             {
                 canMove = false;
 
@@ -208,6 +217,14 @@ public class PlayerMovement : PlayerSystem
         dodgeReady = true;
     }
 
+    private bool IsJumping()
+    {
+        if (mState == MovementState.jump || mState == MovementState.fall || mState == MovementState.land)
+            return true;
+        else
+            return false;
+    }
+
     private void SetMovementState(MovementState state)
     {
         if (state == MovementState.idle && mState != MovementState.idle)
@@ -234,6 +251,8 @@ public class PlayerMovement : PlayerSystem
         player.ID.events.OnMoveInput += SetMovementVector;
         player.ID.events.OnJumpInput += Jump;
         player.ID.events.OnDodgeInput += Dodge;
+
+        player.ID.events.OnLandAnimDone += OnLandingDone;
     }
 
     private void OnDisable()
@@ -241,5 +260,7 @@ public class PlayerMovement : PlayerSystem
         player.ID.events.OnMoveInput -= SetMovementVector;
         player.ID.events.OnJumpInput -= Jump;
         player.ID.events.OnDodgeInput -= Dodge;
+
+        player.ID.events.OnLandAnimDone -= OnLandingDone;
     }
 }

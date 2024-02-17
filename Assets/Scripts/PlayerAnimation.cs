@@ -21,6 +21,11 @@ public class PlayerAnimation : PlayerSystem
         else if (!facingRight) sp.flipX = true;
     }
 
+    void InvokeLandingDone()
+    {
+        player.ID.events.OnLandAnimDone?.Invoke();
+    }
+
     void AnimateIdle()
     {
         PlayAnimation(PlayerAnimStates.IDLE);

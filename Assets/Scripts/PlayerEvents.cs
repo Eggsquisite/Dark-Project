@@ -38,6 +38,7 @@ public struct PlayerEvents
 
     public Action OnIdleAnim;
     public Action OnWalkAnim;
+    public Action OnLandAnimDone;
 
     // Collision Events
 
