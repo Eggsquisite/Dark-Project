@@ -126,11 +126,6 @@ public class PlayerMovement : PlayerSystem
         }
     }
 
-    private void OnLandingDone()
-    {
-        SetMovementState(MovementState.idle);
-    }
-
     private void Jump()
     {
         if (canMove)
@@ -215,6 +210,11 @@ public class PlayerMovement : PlayerSystem
         }
 
         dodgeReady = true;
+    }
+
+    private void OnLandingDone()
+    {
+        SetMovementState(MovementState.idle);
     }
 
     private bool IsJumping()

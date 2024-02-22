@@ -31,6 +31,8 @@ public struct PlayerEvents
     public Action OnJumpUsed;
     public Action OnDodgeUsed;
 
+    // Combat Events
+
     public Action OnPrimaryAttackUsed;
     public Action OnSecondaryAttackUsed;
 
