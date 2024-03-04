@@ -12,11 +12,13 @@ public class PlayerMovement : PlayerSystem
         jump,
         fall,
         land,
-        dodge
+        dodge,
+        attack,
+        stun
     }
 
     private Rigidbody rb;
-    public MovementState mState;
+    //public MovementState mState;
 
     [Header("Move")]
     [SerializeField] float horizontalMultiplier;
@@ -74,17 +76,17 @@ public class PlayerMovement : PlayerSystem
             // Invoke run/idle events depending on player velocity
             if (rb.velocity.x != 0 || rb.velocity.z != 0)
             {
-                SetMovementState(MovementState.run);
+                SetState(PlayerState.Run);
 
-                if (player.IsGrounded() && mState == MovementState.run)
+                if (player.IsGrounded() && CheckState(PlayerState.Run))
                     player.ID.events.OnMovement?.Invoke();
 
             }
             else if (rb.velocity == Vector3.zero)
             {
-                SetMovementState(MovementState.idle);
+                SetState(PlayerState.Idle);
 
-                if (player.IsGrounded() && mState == MovementState.idle)
+                if (player.IsGrounded() && CheckState(PlayerState.Idle))
                     player.ID.events.OnStationary?.Invoke();
             }
         }
@@ -112,16 +114,16 @@ public class PlayerMovement : PlayerSystem
         // Check player velocity to determine what movement state they are in air
         if (!player.IsGrounded() && rb.velocity.y < 0f)
         {
-            SetMovementState(MovementState.fall);
+            SetState(PlayerState.Fall);
             player.ID.events.OnFalling?.Invoke();
 
             // Add weight to character at top of jump to avoid floaty feeling
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * fallSpeed * 10f * Time.fixedDeltaTime, rb.velocity.z);
         }
-        else if (rb.velocity.y == 0f && mState == MovementState.fall)
+        else if (rb.velocity.y == 0f && CheckState(PlayerState.Fall))
         {
             Debug.Log("Landed");
-            SetMovementState(MovementState.land);
+            SetState(PlayerState.Land);
             player.ID.events.OnLanding?.Invoke();
         }
     }
@@ -132,7 +134,7 @@ public class PlayerMovement : PlayerSystem
         {
             if (player.IsGrounded())
             {
-                SetMovementState(MovementState.jump);
+                SetState(PlayerState.Jump);
                 player.ID.events.OnJumpUsed?.Invoke();
             
                 rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
@@ -157,7 +159,7 @@ public class PlayerMovement : PlayerSystem
                 // Save player movement direction
                 Vector3 dodgeDirection = moveDirection;
 
-                SetMovementState(MovementState.dodge);
+                SetState(PlayerState.Dodge);
                 player.ID.events.OnDodgeUsed?.Invoke();
 
                 // Begin dodge movement and cooldown
@@ -214,37 +216,36 @@ public class PlayerMovement : PlayerSystem
 
     private void OnLandingDone()
     {
-        SetMovementState(MovementState.idle);
+        SetState(PlayerState.Idle);
     }
 
     private bool IsJumping()
     {
-        if (mState == MovementState.jump || mState == MovementState.fall || mState == MovementState.land)
+        if (CheckState(PlayerState.Jump) || CheckState(PlayerState.Fall) || CheckState(PlayerState.Land))
             return true;
         else
             return false;
-    }
-
-    private void SetMovementState(MovementState state)
-    {
-        if (state == MovementState.idle && mState != MovementState.idle)
-            mState = MovementState.idle;
-        else if (state == MovementState.run && mState != MovementState.run)
-            mState = MovementState.run;
-        else if (state == MovementState.jump && mState != MovementState.jump)
-            mState = MovementState.jump;
-        else if (state == MovementState.fall && mState != MovementState.fall)
-            mState = MovementState.fall;
-        else if (state == MovementState.land && mState != MovementState.land) 
-            mState = MovementState.land;
-        else if (state == MovementState.dodge && mState != MovementState.dodge)
-            mState = MovementState.dodge;
     }
 
     private void SetMovementVector(Vector2 direction)
     {
         moveDirection = direction;
     }
+
+    #region PLAYER STATE REFERENCES
+
+    private bool CheckState(PlayerState state)
+    {
+        if (player.pState.Equals(state)) return true;
+        return false;
+    }
+
+    private void SetState(PlayerState state)
+    {
+        player.pState = state;
+    }
+
+    #endregion
 
     private void OnEnable()
     {

@@ -29,4 +29,20 @@ public class PlayerInput : PlayerSystem
             player.ID.events.OnDodgeInput?.Invoke();
         }
     }
+
+    public void PrimaryAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            player.ID.events.OnPrimaryAttackInput?.Invoke();
+        }
+    }
+
+    public void SecondaryAttack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            player.ID.events.OnSecondaryAttackInput?.Invoke();
+        }
+    }
 }

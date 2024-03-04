@@ -26,6 +26,16 @@ public class PlayerAnimation : PlayerSystem
         player.ID.events.OnLandAnimDone?.Invoke();
     }
 
+    void InvokeAttackStart()
+    {
+        player.ID.events.OnAttackAnimStart?.Invoke();
+    }
+
+    void InvokeAttackEnd()
+    {
+        player.ID.events.OnAttackAnimDone?.Invoke();
+    }
+
     void AnimateIdle()
     {
         PlayAnimation(PlayerAnimStates.IDLE);
@@ -56,6 +66,8 @@ public class PlayerAnimation : PlayerSystem
         PlayAnimation(PlayerAnimStates.DODGE);
     }
 
+    #region ANIMATION HELPER FUNCTIONS
+
     // Animation Helper Functions ////////////////////////////////////////
     private void PlayAnimation(string newAnim)
     {
@@ -72,6 +84,8 @@ public class PlayerAnimation : PlayerSystem
         return AnimHelper.GetAnimClipLength(ac, newAnim);
     }
     // Animation Helper Functions ////////////////////////////////////////
+
+    #endregion
 
     private void OnEnable()
     {

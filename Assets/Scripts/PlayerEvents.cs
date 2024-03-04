@@ -42,6 +42,12 @@ public struct PlayerEvents
     public Action OnWalkAnim;
     public Action OnLandAnimDone;
 
+    public Action OnAttackAnimStart;
+    public Action OnAttackAnimDone;
+
+    public Action OnDodgeAnimStart;
+    public Action OnDodgeAnimDone;
+
     // Collision Events
 
     public Action<int> OnTakeDamage;
