@@ -28,8 +28,8 @@ public struct PlayerEvents
     public Action OnLanding;
     public Action<bool> OnFacingRight;
 
-    public Action OnJumpUsed;
-    public Action OnDodgeUsed;
+    public Action OnJumping;
+    public Action OnDodging;
 
     // Combat Events
 
@@ -40,7 +40,7 @@ public struct PlayerEvents
 
     public Action OnIdleAnim;
     public Action OnWalkAnim;
-    public Action OnLandAnimDone;
+    public Action OnLandingDone;
 
     public Action OnAttackAnimStart;
     public Action OnAttackAnimDone;

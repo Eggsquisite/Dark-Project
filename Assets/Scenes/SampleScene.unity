@@ -1767,7 +1767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: {fileID: 11400000, guid: 215183f93268e7a4e891ca75863c729a, type: 2}
-  STATE: 0
+  _playerState: 0
   groundCheck: {fileID: 642285131}
   groundLayer:
     serializedVersion: 2
@@ -1784,7 +1784,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aa34aef85bfea149baddfbbe9bc0bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mState: 0
   horizontalMultiplier: 1
   verticalMultiplier: 2
   moveSpeed: 6

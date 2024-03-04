@@ -21,9 +21,12 @@ public class PlayerAnimation : PlayerSystem
         else if (!facingRight) sp.flipX = true;
     }
 
+    #region ANIMATION EVENTS
+
     void InvokeLandingDone()
     {
-        player.ID.events.OnLandAnimDone?.Invoke();
+        //player.pState = PlayerState.Idle;
+        player.ID.events.OnLandingDone?.Invoke();
     }
 
     void InvokeAttackStart()
@@ -35,6 +38,10 @@ public class PlayerAnimation : PlayerSystem
     {
         player.ID.events.OnAttackAnimDone?.Invoke();
     }
+
+    #endregion
+
+    #region PLAYANIMATION CALLS
 
     void AnimateIdle()
     {
@@ -66,6 +73,13 @@ public class PlayerAnimation : PlayerSystem
         PlayAnimation(PlayerAnimStates.DODGE);
     }
 
+    void AnimateAttack()
+    {
+
+    }
+
+    #endregion
+
     #region ANIMATION HELPER FUNCTIONS
 
     // Animation Helper Functions ////////////////////////////////////////
@@ -93,9 +107,9 @@ public class PlayerAnimation : PlayerSystem
 
         player.ID.events.OnMovement += AnimateRun;
         player.ID.events.OnStationary += AnimateIdle;
-        player.ID.events.OnDodgeUsed += AnimateDodge;
+        player.ID.events.OnDodging += AnimateDodge;
 
-        player.ID.events.OnJumpUsed += AnimateJump;
+        player.ID.events.OnJumping += AnimateJump;
         player.ID.events.OnFalling += AnimateFall;
         player.ID.events.OnLanding += AnimateLand;
     }
@@ -106,9 +120,9 @@ public class PlayerAnimation : PlayerSystem
 
         player.ID.events.OnMovement -= AnimateRun;
         player.ID.events.OnStationary -= AnimateIdle;
-        player.ID.events.OnDodgeUsed -= AnimateDodge;
+        player.ID.events.OnDodging -= AnimateDodge;
 
-        player.ID.events.OnJumpUsed -= AnimateJump;
+        player.ID.events.OnJumping -= AnimateJump;
         player.ID.events.OnFalling -= AnimateFall;
         player.ID.events.OnLanding -= AnimateLand;
     }

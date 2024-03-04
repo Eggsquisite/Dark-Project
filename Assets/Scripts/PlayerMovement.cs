@@ -5,20 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : PlayerSystem
 {
-    public enum MovementState
-    {
-        idle,
-        run,
-        jump,
-        fall,
-        land,
-        dodge,
-        attack,
-        stun
-    }
-
     private Rigidbody rb;
-    //public MovementState mState;
 
     [Header("Move")]
     [SerializeField] float horizontalMultiplier;
@@ -122,7 +109,6 @@ public class PlayerMovement : PlayerSystem
         }
         else if (rb.velocity.y == 0f && CheckState(PlayerState.Fall))
         {
-            Debug.Log("Landed");
             SetState(PlayerState.Land);
             player.ID.events.OnLanding?.Invoke();
         }
@@ -135,18 +121,32 @@ public class PlayerMovement : PlayerSystem
             if (player.IsGrounded())
             {
                 SetState(PlayerState.Jump);
-                player.ID.events.OnJumpUsed?.Invoke();
+                player.ID.events.OnJumping?.Invoke();
             
                 rb.velocity = new Vector3(rb.velocity.x, jumpingPower, rb.velocity.z);
             }
         }
     }
 
+    private bool IsJumping()
+    {
+        if (CheckState(PlayerState.Jump) || CheckState(PlayerState.Fall) || CheckState(PlayerState.Land))
+            return true;
+        else
+            return false;
+    }
+
+    private void OnLandingDone()
+    {
+        // When landing animation finishes, reset player to Idle state
+        SetState(PlayerState.Idle);
+    }
+
     private void Dodge()
     {
         if (!dodgeReady)
         {
-            Debug.Log("Dodge is in cooldown! " + dodgeCooldownTimer + " seconds left");
+            Debug.Log("Dodge cooldown: " + dodgeCooldownTimer + " seconds left");
             return;
         }
 
@@ -160,14 +160,15 @@ public class PlayerMovement : PlayerSystem
                 Vector3 dodgeDirection = moveDirection;
 
                 SetState(PlayerState.Dodge);
-                player.ID.events.OnDodgeUsed?.Invoke();
+                player.ID.events.OnDodging?.Invoke();
 
-                // Begin dodge movement and cooldown
+                // Begin dodge Movement
                 if (dodgeRoutine != null)
                     StopCoroutine(dodgeRoutine);
 
                 dodgeRoutine = StartCoroutine(DodgeRoutine(dodgeDirection));
 
+                // Begin dodge Cooldown
                 if (dodgeCooldownRoutine != null)
                     StopCoroutine(dodgeCooldownRoutine);
 
@@ -214,19 +215,6 @@ public class PlayerMovement : PlayerSystem
         dodgeReady = true;
     }
 
-    private void OnLandingDone()
-    {
-        SetState(PlayerState.Idle);
-    }
-
-    private bool IsJumping()
-    {
-        if (CheckState(PlayerState.Jump) || CheckState(PlayerState.Fall) || CheckState(PlayerState.Land))
-            return true;
-        else
-            return false;
-    }
-
     private void SetMovementVector(Vector2 direction)
     {
         moveDirection = direction;
@@ -253,7 +241,7 @@ public class PlayerMovement : PlayerSystem
         player.ID.events.OnJumpInput += Jump;
         player.ID.events.OnDodgeInput += Dodge;
 
-        player.ID.events.OnLandAnimDone += OnLandingDone;
+        player.ID.events.OnLandingDone += OnLandingDone;
     }
 
     private void OnDisable()
@@ -262,6 +250,6 @@ public class PlayerMovement : PlayerSystem
         player.ID.events.OnJumpInput -= Jump;
         player.ID.events.OnDodgeInput -= Dodge;
 
-        player.ID.events.OnLandAnimDone -= OnLandingDone;
+        player.ID.events.OnLandingDone -= OnLandingDone;
     }
 }
