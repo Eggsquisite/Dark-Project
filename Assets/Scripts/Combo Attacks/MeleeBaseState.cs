@@ -61,7 +61,7 @@ public class MeleeBaseState : State
         }
     }
 
-    private void OnAttackInput()
+    private void OnAttackInput(int yes)
     {
         AttackPressedTimer = 2;
         shouldCombo = true;
@@ -98,11 +98,11 @@ public class MeleeBaseState : State
 
     private void OnEnable()
     {
-        player.ID.events.OnPrimaryAttackInput += OnAttackInput;
+        player.ID.events.OnAttackInput += OnAttackInput;
     }
 
     private void OnDisable()
     {
-        player.ID.events.OnPrimaryAttackInput -= OnAttackInput;
+        player.ID.events.OnAttackInput -= OnAttackInput;
     }
 }

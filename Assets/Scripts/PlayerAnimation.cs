@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,21 @@ public class PlayerAnimation : PlayerSystem
         ac = anim.runtimeAnimatorController;
     }
 
+    private void Update()
+    {
+        if (anim.GetFloat("Weapon.Active") > 0f)
+        {
+            Debug.Log("weapon is doing damage!");
+            player.ID.events.OnAttackWeaponActive?.Invoke();
+        }
+
+        if (anim.GetFloat("AttackWindow.Open") > 0f)
+        {
+            Debug.Log("attack window open!");
+            player.ID.events.OnAttackWindowOpen?.Invoke(anim.GetFloat("AttackWindow.Open"));
+        }
+    }
+
     void CheckDirection(bool facingRight)
     {
         if (facingRight) sp.flipX = false;
@@ -27,16 +43,6 @@ public class PlayerAnimation : PlayerSystem
     {
         //player.pState = PlayerState.Idle;
         player.ID.events.OnLandingDone?.Invoke();
-    }
-
-    void InvokeAttackStart()
-    {
-        player.ID.events.OnAttackAnimStart?.Invoke();
-    }
-
-    void InvokeAttackEnd()
-    {
-        player.ID.events.OnAttackAnimDone?.Invoke();
     }
 
     #endregion
@@ -73,9 +79,12 @@ public class PlayerAnimation : PlayerSystem
         PlayAnimation(PlayerAnimStates.DODGE);
     }
 
-    void AnimateAttack()
+    void AnimateAttack(int attackIndex)
     {
+        var name = "Attack_" + attackIndex;
 
+        anim.SetTrigger(name);
+        player.ID.events.OnAttackAnimationDuration?.Invoke(GetAnimationLength(name));
     }
 
     #endregion
@@ -112,6 +121,8 @@ public class PlayerAnimation : PlayerSystem
         player.ID.events.OnJumping += AnimateJump;
         player.ID.events.OnFalling += AnimateFall;
         player.ID.events.OnLanding += AnimateLand;
+
+        player.ID.events.OnPrimaryGroundAttackUsed += AnimateAttack;
     }
 
     private void OnDisable()
@@ -125,5 +136,7 @@ public class PlayerAnimation : PlayerSystem
         player.ID.events.OnJumping -= AnimateJump;
         player.ID.events.OnFalling -= AnimateFall;
         player.ID.events.OnLanding -= AnimateLand;
+
+        player.ID.events.OnPrimaryGroundAttackUsed -= AnimateAttack;
     }
 }

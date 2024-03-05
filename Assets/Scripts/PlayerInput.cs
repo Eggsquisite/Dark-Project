@@ -34,7 +34,7 @@ public class PlayerInput : PlayerSystem
     {
         if (context.performed)
         {
-            player.ID.events.OnPrimaryAttackInput?.Invoke();
+            player.ID.events.OnAttackInput?.Invoke(1);
         }
     }
 
@@ -42,7 +42,7 @@ public class PlayerInput : PlayerSystem
     {
         if (context.performed)
         {
-            player.ID.events.OnSecondaryAttackInput?.Invoke();
+            player.ID.events.OnAttackInput?.Invoke(2);
         }
     }
 }

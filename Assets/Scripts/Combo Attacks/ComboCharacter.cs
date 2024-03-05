@@ -25,7 +25,7 @@ public class ComboCharacter : PlayerSystem
         }
     }
 
-    public void BeginMeleeEntryState()
+    public void BeginMeleeEntryState(int type)
     {
         if (player.pState == PlayerState.Stun)
             return;
@@ -39,12 +39,12 @@ public class ComboCharacter : PlayerSystem
 
     private void OnEnable()
     {
-        player.ID.events.OnPrimaryAttackInput += BeginMeleeEntryState;
+        player.ID.events.OnAttackInput += BeginMeleeEntryState;
     }
 
     private void OnDisable()
     {
-        player.ID.events.OnPrimaryAttackInput -= BeginMeleeEntryState;
+        player.ID.events.OnAttackInput -= BeginMeleeEntryState;
     }
 
 }

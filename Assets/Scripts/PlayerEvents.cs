@@ -12,8 +12,7 @@ public struct PlayerEvents
     public Action OnJumpInput;
     public Action OnDodgeInput;
 
-    public Action OnPrimaryAttackInput;
-    public Action OnSecondaryAttackInput;
+    public Action<int> OnAttackInput;
 
     // UI Events
 
@@ -33,8 +32,12 @@ public struct PlayerEvents
 
     // Combat Events
 
-    public Action OnPrimaryAttackUsed;
-    public Action OnSecondaryAttackUsed;
+    // param takes attackIndex to determine what animation to play
+    public Action<int> OnPrimaryGroundAttackUsed;
+    public Action<int> OnSecondaryGroundAttackUsed;
+
+    public Action<int> OnPrimaryAirAttackUsed;
+    public Action<int> OnSecondaryAirAttackUsed;
 
     // Animation Events
 
@@ -48,6 +51,10 @@ public struct PlayerEvents
     public Action OnDodgeAnimStart;
     public Action OnDodgeAnimDone;
 
+    public Action OnAttackWeaponActive;
+    public Action<float> OnAttackWindowOpen;
+    public Action<float> OnAttackAnimationDuration;
+
     // Collision Events
 
     public Action<int> OnTakeDamage;
@@ -55,6 +62,7 @@ public struct PlayerEvents
     // Health Events
 
     public Action OnDeath;
+    //internal Action<int> OnPrimaryAttackUsed;
 
     // Status Effect Events
 }
